@@ -107,19 +107,26 @@ impl Square {
 }
 
 fn main() {
-    let test_vec = vec![
+    let blinker = vec![
         vec![false, true, false],
         vec![false, true, false],
         vec![false, true, false],
     ];
 
+    let toad = vec![
+        vec![false, false, true, false],
+        vec![true, false, false, true],
+        vec![true, false, false, true],
+        vec![false, true, false, false],
+    ];
+
     let mut board = Board {
         board: Vec::new(),
-        rows: 3,
-        cols: 3,
+        rows: 4,
+        cols: 4,
     };
 
-    board.set_board(test_vec);
+    board.set_board(toad);
 
     board.print_board();
 

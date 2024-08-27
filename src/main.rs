@@ -15,6 +15,23 @@ struct Board {
 }
 
 impl Board {
+    fn from_vec(vec: Vec<Vec<bool>>) -> Board {
+        let rows = vec.len();
+        let cols;
+        if rows > 0 {
+            cols = vec[0].len();
+        } else {
+            cols = 0;
+        }
+        let mut out = Board {
+            board: Vec::new(),
+            rows,
+            cols,
+        };
+        Board::set_board(&mut out, vec);
+        out
+    }
+
     fn get_neighbours(&self, m: usize, n: usize) -> Vec<&Square> {
         let mut output = Vec::new();
 
@@ -120,13 +137,8 @@ fn main() {
         vec![false, true, false, false],
     ];
 
-    let mut board = Board {
-        board: Vec::new(),
-        rows: 4,
-        cols: 4,
-    };
-
-    board.set_board(toad);
+    let tmp = Board::from_vec(vec![]);
+    let mut board = Board::from_vec(toad);
 
     board.print_board();
 

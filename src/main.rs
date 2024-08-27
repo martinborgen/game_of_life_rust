@@ -163,7 +163,7 @@ fn main() {
     board.print_board();
 
     let mut input = String::new();
-    while input.trim() != String::from("Q") {
+    while input.trim().to_uppercase() != String::from("Q") {
         input.clear();
         println!("iteration, enter to continue",);
         let _ = io::stdin().read_line(&mut input);

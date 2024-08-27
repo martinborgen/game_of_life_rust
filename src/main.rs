@@ -15,6 +15,17 @@ struct Board {
 }
 
 impl Board {
+    fn with_size(rows: usize, cols: usize) -> Board {
+        let tmp = vec![vec![false; cols]; rows];
+        let mut out = Board {
+            board: Vec::new(),
+            rows,
+            cols,
+        };
+        Board::set_board(&mut out, tmp);
+        out
+    }
+
     fn from_vec(vec: Vec<Vec<bool>>) -> Board {
         let rows = vec.len();
         let cols;

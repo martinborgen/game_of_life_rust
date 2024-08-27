@@ -54,9 +54,9 @@ impl Board {
         for i in &self.board {
             for j in i {
                 if j.alive {
-                    print!("*");
+                    print!("█");
                 } else {
-                    print!("o");
+                    print!("▒");
                 }
             }
             println!();

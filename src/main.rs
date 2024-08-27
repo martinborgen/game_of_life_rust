@@ -79,6 +79,14 @@ impl Board {
         }
     }
 
+    fn set_cell(&mut self, row: usize, col: usize, alive: bool) -> Result<(), &str> {
+        if row > self.rows || col > self.cols {
+            return Err("Index out of range");
+        }
+        self.board[row][col].alive = alive;
+        Ok(())
+    }
+
     fn print_board(&self) {
         for i in &self.board {
             for j in i {

@@ -65,6 +65,7 @@ impl Board {
     }
 
     fn set_board(&mut self, vec: Vec<Vec<bool>>) {
+        self.board.clear();
         for i in 0..vec.len() {
             self.board.push(Vec::new());
             for j in 0..vec[i].len() {

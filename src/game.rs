@@ -1,4 +1,4 @@
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug, Default)]
 pub(crate) struct Square {
     pub(crate) alive: bool,
     pub(crate) row: usize,
@@ -6,6 +6,7 @@ pub(crate) struct Square {
     pub(crate) neighbours_alive: u32,
 }
 
+#[derive(Debug, Default)]
 pub(crate) struct Board {
     pub(crate) board: Vec<Vec<Square>>,
     pub(crate) rows: usize,

@@ -84,6 +84,52 @@ impl Board {
         Ok(())
     }
 
+    pub(crate) fn resize_board(&mut self, new_rows: usize, new_cols: usize) {
+        if self.rows > new_rows {
+            for _ in 0..(self.rows - new_rows) {
+                self.board.pop();
+            }
+        }
+
+        if self.cols > new_cols {
+            for row in &mut self.board {
+                for _ in 0..self.cols - new_cols {
+                    row.pop();
+                }
+            }
+        }
+
+        if self.rows < new_rows {
+            for i in 0..(new_rows - self.rows) {
+                let mut new_row = Vec::new();
+                for j in 0..self.cols {
+                    new_row.push(Square {
+                        alive: false,
+                        row: i + self.rows,
+                        col: j,
+                        neighbours_alive: 0,
+                    })
+                }
+                self.board.push(new_row);
+            }
+        }
+
+        if self.cols < new_cols {
+            for (i, row) in self.board.iter_mut().enumerate() {
+                for j in 0..(new_cols - self.cols) {
+                    row.push(Square {
+                        alive: false,
+                        row: i,
+                        col: self.cols + j,
+                        neighbours_alive: 0,
+                    });
+                }
+            }
+        }
+        self.rows = new_rows;
+        self.cols = new_cols;
+    }
+
     pub(crate) fn print_board(&self) {
         for i in &self.board {
             for j in i {
@@ -235,5 +281,60 @@ mod test {
 
         let res = blinker.set_cell(10, 12, true);
         assert_eq!(res, Err("Index out of range"));
+    }
+
+    #[test]
+    fn verify_extend_board() {
+        let blinker_vec = vec![
+            vec![false, true, false],
+            vec![false, true, false],
+            vec![false, true, false],
+        ];
+        let mut blinker = Board::from_vec(blinker_vec);
+
+        blinker.resize_board(10, 12);
+
+        assert_eq!(blinker.rows, 10, "Expected {}, found {}", 10, blinker.rows);
+        assert_eq!(blinker.board.len(), 10);
+        assert_eq!(blinker.cols, 12, "Expected {}, found {}", 12, blinker.cols);
+        assert_eq!(blinker.board[0].len(), 12);
+
+        assert!(blinker.board[9][11].alive == false);
+
+        for (i, row) in blinker.board.iter().enumerate() {
+            for (j, cell) in row.iter().enumerate() {
+                assert!(cell.row == i);
+                assert!(cell.col == j);
+            }
+        }
+    }
+
+    #[test]
+    fn verify_shrink_board() {
+        let blinker_vec = vec![
+            vec![false, true, false, false, false, false],
+            vec![false, true, false, false, false, false],
+            vec![false, true, false, false, false, false],
+            vec![false, true, false, false, false, false],
+            vec![false, true, false, false, false, false],
+            vec![false, true, false, false, false, false],
+        ];
+        let mut blinker = Board::from_vec(blinker_vec);
+
+        blinker.resize_board(3, 4);
+
+        assert_eq!(blinker.rows, 3, "Expected {}, found {}", 3, blinker.rows);
+        assert_eq!(blinker.board.len(), 3);
+        assert_eq!(blinker.cols, 4, "Expected {}, found {}", 4, blinker.cols);
+        assert_eq!(blinker.board[0].len(), 4);
+
+        assert!(blinker.board[0][1].alive);
+
+        for (i, row) in blinker.board.iter().enumerate() {
+            for (j, cell) in row.iter().enumerate() {
+                assert!(cell.row == i);
+                assert!(cell.col == j);
+            }
+        }
     }
 }

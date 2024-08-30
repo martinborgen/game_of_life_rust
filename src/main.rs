@@ -28,12 +28,7 @@ impl Board {
 
     fn from_vec(vec: Vec<Vec<bool>>) -> Board {
         let rows = vec.len();
-        let cols;
-        if rows > 0 {
-            cols = vec[0].len();
-        } else {
-            cols = 0;
-        }
+        let cols = if rows > 0 { vec[0].len() } else { 0 };
         let mut out = Board {
             board: Vec::new(),
             rows,
@@ -61,14 +56,14 @@ impl Board {
             }
         }
 
-        return output;
+        output
     }
 
     fn set_board(&mut self, vec: Vec<Vec<bool>>) {
         self.board.clear();
-        for i in 0..vec.len() {
+        for (i, i_vec) in vec.iter().enumerate() {
             self.board.push(Vec::new());
-            for j in 0..vec[i].len() {
+            for j in 0..i_vec.len() {
                 self.board[i].push(Square {
                     alive: vec[i][j],
                     row: i,
@@ -135,10 +130,8 @@ impl Square {
             if self.neighbours_alive < 2 || self.neighbours_alive > 3 {
                 self.alive = false;
             }
-        } else {
-            if self.neighbours_alive == 3 {
-                self.alive = true;
-            }
+        } else if self.neighbours_alive == 3 {
+            self.alive = true;
         }
     }
 }
@@ -156,7 +149,7 @@ fn main() {
     board.print_board();
 
     let mut input = String::new();
-    while input.trim().to_uppercase() != String::from("Q") {
+    while input.trim().to_uppercase() != "Q" {
         input.clear();
         println!("iteration, enter to continue",);
         let _ = io::stdin().read_line(&mut input);

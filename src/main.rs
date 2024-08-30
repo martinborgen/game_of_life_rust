@@ -36,8 +36,6 @@ impl GameApp {
                 {
                     self.board.advance_state();
                 }
-            } else {
-                self.exit();
             }
         }
     }

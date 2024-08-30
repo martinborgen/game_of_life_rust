@@ -39,7 +39,14 @@ impl GameApp {
                             }
                             self.editing = !self.editing;
                         }
-                        KeyCode::Char(' ') | KeyCode::Enter => self.board.advance_state(),
+                        KeyCode::Char(' ') => self.board.advance_state(),
+                        KeyCode::Enter => {
+                            if self.editing {
+                                let cell = &mut self.board.board[self.cursor.0 as usize - 1]
+                                    [self.cursor.1 as usize];
+                                cell.alive = !cell.alive;
+                            }
+                        }
                         KeyCode::Char('q') | KeyCode::Char('Q') => self.exit(),
                         _ => {}
                     }
@@ -86,7 +93,7 @@ impl Widget for &GameApp {
         let instructions = Title::from(Line::from(vec![
             "Advance state: ".into(),
             "<spacebar>".blue().bold(),
-            " or ".into(),
+            " Toggle cell alive (in editing mode): ".into(),
             "<return>".blue().bold(),
             " Quit: ".into(),
             "<q>".blue().bold(),

@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(PartialEq, Debug, Default)]
 pub(crate) struct Square {
     pub(crate) alive: bool,
@@ -123,6 +125,23 @@ impl Board {
                 j.update_status();
             }
         }
+    }
+}
+
+impl fmt::Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut out = String::with_capacity(self.rows * self.cols);
+        for i in &self.board {
+            for j in i {
+                if j.alive {
+                    out.push('█');
+                } else {
+                    out.push('▒');
+                }
+            }
+            out.push('\n');
+        }
+        write!(f, "{}", out)
     }
 }
 

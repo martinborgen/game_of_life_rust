@@ -95,10 +95,10 @@ impl Widget for &GameApp {
             "<enter>".blue().bold(),
             " Toggle cell alive (in editing mode): ".into(),
             "<space>".blue().bold(),
-            " Quit: ".into(),
-            "<q>".blue().bold(),
             " Edit cells: ".into(),
             "<e>".blue().bold(),
+            " Quit: ".into(),
+            "<q>".blue().bold(),
         ]));
         let block = Block::new()
             .title(title.alignment(Alignment::Center))

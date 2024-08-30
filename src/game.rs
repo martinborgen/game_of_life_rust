@@ -17,6 +17,7 @@ pub(crate) struct Board {
 
 #[allow(dead_code)]
 impl Board {
+    /// Creates an empty board with size given by rows and cols
     pub(crate) fn with_size(rows: usize, cols: usize) -> Board {
         let tmp = vec![vec![false; cols]; rows];
         let mut out = Board {
@@ -28,6 +29,8 @@ impl Board {
         out
     }
 
+    /// Creates a board with the initial configuration as given by vec.
+    ///
     pub(crate) fn from_vec(vec: Vec<Vec<bool>>) -> Board {
         let rows = vec.len();
         let cols = if rows > 0 { vec[0].len() } else { 0 };
@@ -40,7 +43,7 @@ impl Board {
         out
     }
 
-    pub(crate) fn get_neighbours(&self, m: usize, n: usize) -> Vec<&Square> {
+    fn get_neighbours(&self, m: usize, n: usize) -> Vec<&Square> {
         let mut output = Vec::new();
 
         let mut imin = 0;
@@ -61,6 +64,7 @@ impl Board {
         output
     }
 
+    /// Sets the board according to vec. Only supports square matrixes
     pub(crate) fn set_board(&mut self, vec: Vec<Vec<bool>>) {
         self.board.clear();
         for (i, i_vec) in vec.iter().enumerate() {
@@ -84,6 +88,8 @@ impl Board {
         Ok(())
     }
 
+    /// Resizes the board, preserving the status of old cells,
+    /// providing they are within the new area, centered from the top left corner.
     pub(crate) fn resize_board(&mut self, new_rows: usize, new_cols: usize) {
         if self.rows > new_rows {
             for _ in 0..(self.rows - new_rows) {
@@ -130,6 +136,7 @@ impl Board {
         self.cols = new_cols;
     }
 
+    /// Prints the board to stdout
     pub(crate) fn print_board(&self) {
         for i in &self.board {
             for j in i {
@@ -143,6 +150,7 @@ impl Board {
         }
     }
 
+    /// Advances the state of the board.
     pub(crate) fn advance_state(&mut self) {
         for i in 0..self.rows {
             for j in 0..self.cols {
@@ -177,7 +185,7 @@ impl fmt::Display for Board {
 }
 
 impl Square {
-    pub(crate) fn count_living_neighbours(&self, board: &Board) -> u32 {
+    fn count_living_neighbours(&self, board: &Board) -> u32 {
         let mut count = 0;
         let neighbours: Vec<&Square> = board.get_neighbours(self.row, self.col);
         for cell in neighbours {
@@ -190,7 +198,7 @@ impl Square {
         count
     }
 
-    pub(crate) fn update_status(&mut self) {
+    fn update_status(&mut self) {
         if self.alive {
             if self.neighbours_alive < 2 || self.neighbours_alive > 3 {
                 self.alive = false;

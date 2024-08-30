@@ -30,7 +30,7 @@ impl GameApp {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
                         KeyCode::Up => {
-                            if self.cursor.0 > 0 {
+                            if self.cursor.0 > 1 {
                                 self.cursor.0 -= 1;
                             }
                         }
@@ -66,11 +66,11 @@ impl GameApp {
             .resize_board(size.height as usize, size.width as usize);
 
         // The game uses x for rows, y for columns, while the UI uses x for columns and y for rows!
-        if self.cursor.0 > size.height {
-            self.cursor.0 = size.height;
+        if self.cursor.0 > size.height - 2 {
+            self.cursor.0 = size.height - 2;
         }
-        if self.cursor.1 > size.width {
-            self.cursor.1 = size.width;
+        if self.cursor.1 > size.width - 1 {
+            self.cursor.1 = size.width - 1;
         }
 
         frame.render_widget(&*self, frame.area());

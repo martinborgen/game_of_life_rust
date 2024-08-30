@@ -48,8 +48,12 @@ impl GameApp {
         }
     }
 
-    fn render_frame(&self, frame: &mut Frame) {
-        frame.render_widget(self, frame.area());
+    fn render_frame(&mut self, frame: &mut Frame) {
+        let size = frame.area();
+        self.board
+            .resize_board(size.height as usize, size.width as usize);
+
+        frame.render_widget(&*self, frame.area());
         if self.editing {
             frame.set_cursor_position(Position {
                 x: self.cursor.1,

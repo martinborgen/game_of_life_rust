@@ -1,6 +1,6 @@
 use ratatui::{
     buffer::Buffer,
-    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
+    crossterm::event::{self, Event, KeyCode, KeyEventKind},
     layout::{Alignment, Position, Rect},
     style::Stylize,
     symbols::border,
@@ -42,13 +42,10 @@ impl GameApp {
                         }
                         KeyCode::Right => self.cursor.1 += 1,
                         KeyCode::Char('e') => {
-                            // if !self.editing {
-                            //     self.cursor = (1, 0);
-                            // }
                             self.editing = !self.editing;
                         }
-                        KeyCode::Char(' ') => self.board.advance_state(),
-                        KeyCode::Enter => {
+                        KeyCode::Enter => self.board.advance_state(),
+                        KeyCode::Char(' ') => {
                             if self.editing {
                                 let cell = &mut self.board.board[self.cursor.0 as usize - 1]
                                     [self.cursor.1 as usize];
@@ -90,27 +87,14 @@ impl GameApp {
     }
 }
 
-fn make_board() -> game::Board {
-    let toad = vec![
-        vec![false, false, true, false],
-        vec![true, false, false, true],
-        vec![true, false, false, true],
-        vec![false, true, false, false],
-    ];
-
-    let board = game::Board::from_vec(toad);
-
-    board
-}
-
 impl Widget for &GameApp {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from("Game Of Life".bold());
         let instructions = Title::from(Line::from(vec![
             "Advance state: ".into(),
-            "<spacebar>".blue().bold(),
+            "<enter>".blue().bold(),
             " Toggle cell alive (in editing mode): ".into(),
-            "<return>".blue().bold(),
+            "<space>".blue().bold(),
             " Quit: ".into(),
             "<q>".blue().bold(),
             " Edit cells: ".into(),
@@ -136,7 +120,7 @@ impl Widget for &GameApp {
 
 fn main() {
     let mut game = GameApp {
-        board: make_board(),
+        board: game::Board::with_size(1, 1),
         exit: false,
         cursor: (1, 0),
         editing: false,

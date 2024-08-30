@@ -1,7 +1,7 @@
 use ratatui::{
     buffer::Buffer,
     crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
-    layout::{Alignment, Rect},
+    layout::{Alignment, Position, Rect},
     style::Stylize,
     symbols::border,
     text::{Line, Text},
@@ -17,6 +17,8 @@ mod tui;
 struct GameApp {
     board: game::Board,
     exit: bool,
+    cursor: (u16, u16),
+    editing: bool,
 }
 
 impl GameApp {
@@ -25,16 +27,22 @@ impl GameApp {
             let _ = terminal.draw(|frame| self.render_frame(frame));
 
             if let Ok(Event::Key(key)) = event::read() {
-                if key.kind == KeyEventKind::Press
-                    && (key.code == KeyCode::Char('q') || key.code == KeyCode::Char('Q'))
-                {
-                    self.exit();
-                }
-
-                if key.kind == KeyEventKind::Press
-                    && (key.code == KeyCode::Enter || key.code == KeyCode::Char(' '))
-                {
-                    self.board.advance_state();
+                if key.kind == KeyEventKind::Press {
+                    match key.code {
+                        KeyCode::Up => self.cursor.0 -= 1,
+                        KeyCode::Down => self.cursor.0 += 1,
+                        KeyCode::Left => self.cursor.1 -= 1,
+                        KeyCode::Right => self.cursor.1 += 1,
+                        KeyCode::Char('e') => {
+                            if !self.editing {
+                                self.cursor = (0, 0);
+                            }
+                            self.editing = !self.editing;
+                        }
+                        KeyCode::Char(' ') | KeyCode::Enter => self.board.advance_state(),
+                        KeyCode::Char('q') | KeyCode::Char('Q') => self.exit(),
+                        _ => {}
+                    }
                 }
             }
         }
@@ -42,6 +50,12 @@ impl GameApp {
 
     fn render_frame(&self, frame: &mut Frame) {
         frame.render_widget(self, frame.area());
+        if self.editing {
+            frame.set_cursor_position(Position {
+                x: self.cursor.1,
+                y: self.cursor.0,
+            });
+        }
     }
 
     fn exit(&mut self) {
@@ -72,6 +86,8 @@ impl Widget for &GameApp {
             "<return>".blue().bold(),
             " Quit: ".into(),
             "<q>".blue().bold(),
+            " Edit cells: ".into(),
+            "<e>".blue().bold(),
         ]));
         let block = Block::new()
             .title(title.alignment(Alignment::Center))
@@ -95,6 +111,8 @@ fn main() {
     let mut game = GameApp {
         board: make_board(),
         exit: false,
+        cursor: (0, 0),
+        editing: false,
     };
     let mut terminal = tui::init().unwrap();
     let _app_result = game.run(&mut terminal);

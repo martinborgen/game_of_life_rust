@@ -1,6 +1,7 @@
 use ratatui::{
-    crossterm::event::{self, KeyCode, KeyEventKind},
-    layout::Alignment,
+    buffer::Buffer,
+    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
+    layout::{Alignment, Rect},
     style::Stylize,
     symbols::border,
     text::{Line, Text},
@@ -23,7 +24,7 @@ impl GameApp {
         while !self.exit {
             let _ = terminal.draw(|frame| self.render_frame(frame));
 
-            if let Ok(event::Event::Key(key)) = event::read() {
+            if let Ok(Event::Key(key)) = event::read() {
                 if key.kind == KeyEventKind::Press
                     && (key.code == KeyCode::Char('q') || key.code == KeyCode::Char('Q'))
                 {
@@ -64,7 +65,7 @@ fn make_board() -> game::Board {
 }
 
 impl Widget for &GameApp {
-    fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer) {
+    fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from("Game Of Life".bold());
         let instructions = Title::from(Line::from(vec![
             "Advance state: ".into(),

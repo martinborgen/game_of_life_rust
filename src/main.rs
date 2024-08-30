@@ -29,14 +29,22 @@ impl GameApp {
             if let Ok(Event::Key(key)) = event::read() {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
-                        KeyCode::Up => self.cursor.0 -= 1,
+                        KeyCode::Up => {
+                            if self.cursor.0 > 0 {
+                                self.cursor.0 -= 1;
+                            }
+                        }
                         KeyCode::Down => self.cursor.0 += 1,
-                        KeyCode::Left => self.cursor.1 -= 1,
+                        KeyCode::Left => {
+                            if self.cursor.1 > 0 {
+                                self.cursor.1 -= 1;
+                            }
+                        }
                         KeyCode::Right => self.cursor.1 += 1,
                         KeyCode::Char('e') => {
-                            if !self.editing {
-                                self.cursor = (0, 0);
-                            }
+                            // if !self.editing {
+                            //     self.cursor = (1, 0);
+                            // }
                             self.editing = !self.editing;
                         }
                         KeyCode::Char(' ') => self.board.advance_state(),
@@ -59,6 +67,14 @@ impl GameApp {
         let size = frame.area();
         self.board
             .resize_board(size.height as usize, size.width as usize);
+
+        // The game uses x for rows, y for columns, while the UI uses x for columns and y for rows!
+        if self.cursor.0 > size.height {
+            self.cursor.0 = size.height;
+        }
+        if self.cursor.1 > size.width {
+            self.cursor.1 = size.width;
+        }
 
         frame.render_widget(&*self, frame.area());
         if self.editing {
@@ -122,7 +138,7 @@ fn main() {
     let mut game = GameApp {
         board: make_board(),
         exit: false,
-        cursor: (0, 0),
+        cursor: (1, 0),
         editing: false,
     };
     let mut terminal = tui::init().unwrap();

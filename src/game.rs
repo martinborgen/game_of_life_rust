@@ -8,6 +8,7 @@ pub(crate) struct Square {
     pub(crate) neighbours_alive: u32,
 }
 
+#[derive(Debug, Default)]
 pub(crate) struct Board {
     pub(crate) board: Vec<Vec<Square>>,
     pub(crate) rows: usize,

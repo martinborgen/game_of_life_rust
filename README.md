@@ -11,3 +11,6 @@ The most common ruleset is:
 
 ## This project
 This project is an attempt at getting a more performant version than my old python program. It also serves as a nice exercise in learning how to make a CLI in rust. 
+
+
+![image](https://github.com/user-attachments/assets/b7468d66-83c2-4bf7-889b-a07991277411)

@@ -94,6 +94,21 @@ impl Board {
         }
     }
 
+    pub(crate) fn to_string(&self) -> String {
+        let mut out = String::with_capacity(self.rows * self.cols);
+        for i in &self.board {
+            for j in i {
+                if j.alive {
+                    out.push('█');
+                } else {
+                    out.push('▒');
+                }
+            }
+            out.push('\n');
+        }
+        out
+    }
+
     pub(crate) fn advance_state(&mut self) {
         for i in 0..self.rows {
             for j in 0..self.cols {
